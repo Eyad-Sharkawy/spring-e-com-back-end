@@ -8,13 +8,17 @@ import dev.eyadsharkawy.spring_e_com.exceptions.ResourceNotFoundException;
 import dev.eyadsharkawy.spring_e_com.repositories.ProductRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
 public class ProductService {
+
+    private static final Set<String> ALLOWED_SORT_FIELDS = Set.of("name", "price", "stock");
 
     private final ProductRepository productRepository;
 
@@ -34,8 +38,16 @@ public class ProductService {
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found: " + id));
     }
 
-    public List<ProductResponse> getAllProducts() {
-        return productRepository.findAll()
+    public List<ProductResponse> getAllProducts(String sortBy, String direction) {
+        String safeSortField = ALLOWED_SORT_FIELDS.contains(sortBy) ? sortBy : "name";
+
+        Sort.Direction sortDirection = "desc".equalsIgnoreCase(direction)
+                ? Sort.Direction.DESC
+                : Sort.Direction.ASC;
+
+        Sort sort = Sort.by(sortDirection, safeSortField);
+
+        return productRepository.findAll(sort)
                 .stream()
                 .map(this::mapToDto)
                 .toList();

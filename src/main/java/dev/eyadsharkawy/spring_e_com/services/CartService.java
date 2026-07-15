@@ -1,6 +1,7 @@
 package dev.eyadsharkawy.spring_e_com.services;
 
 import dev.eyadsharkawy.spring_e_com.dtos.cart.CartDto;
+import dev.eyadsharkawy.spring_e_com.dtos.cart.CartItemResponse;
 import dev.eyadsharkawy.spring_e_com.entities.Cart;
 import dev.eyadsharkawy.spring_e_com.entities.CartItem;
 import dev.eyadsharkawy.spring_e_com.entities.Product;
@@ -12,11 +13,21 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
+import java.util.Map;
+
 @Service
 @RequiredArgsConstructor
 public class CartService {
     private final CartRepository cartRepository;
     private final ProductRepository productRepository;
+
+    private static final Map<String, Comparator<CartItemResponse>> SORT_COMPARATORS = Map.of(
+            "productName", Comparator.comparing(CartItemResponse::productName, String.CASE_INSENSITIVE_ORDER),
+            "productPrice", Comparator.comparing(CartItemResponse::productPrice),
+            "quantity", Comparator.comparingInt(CartItemResponse::quantity),
+            "subTotal", Comparator.comparing(CartItemResponse::subTotal)
+    );
 
     @Transactional
     public CartDto addProduct(String cartId, String productId, int quantityToAdd) {
@@ -33,7 +44,7 @@ public class CartService {
 
         if (totalRequested > product.getStock()) {
             throw new InsufficientStockException(
-                    "Insufficient" + product.getName() + ". Only " + product.getStock() + " left."
+                    "Insufficient stock for " + product.getName() + ". Only " + product.getStock() + " left."
             );
         }
 
@@ -69,8 +80,17 @@ public class CartService {
         return CartDto.from(cartRepository.save(cart));
     }
 
-    public CartDto getCartDisplay(String cartId) {
-        return CartDto.from(findCartOrThrow(cartId));
+    public CartDto getCartDisplay(String cartId, String sortBy, String direction) {
+        Cart cart = findCartOrThrow(cartId);
+        Comparator<CartItemResponse> comparator = buildComparator(sortBy, direction);
+        return CartDto.from(cart, comparator);
+    }
+
+    private Comparator<CartItemResponse> buildComparator(String sortBy, String direction) {
+        Comparator<CartItemResponse> comparator = SORT_COMPARATORS.getOrDefault(
+                sortBy, SORT_COMPARATORS.get("productName"));
+
+        return "desc".equalsIgnoreCase(direction) ? comparator.reversed() : comparator;
     }
 
     private Cart findCartOrThrow(String cartId) {

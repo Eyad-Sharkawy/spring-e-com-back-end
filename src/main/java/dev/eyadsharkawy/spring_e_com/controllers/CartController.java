@@ -15,8 +15,11 @@ public class CartController {
     private final CartService cartService;
 
     @GetMapping("/{cartId}")
-    public ResponseEntity<CartDto> getCart(@PathVariable String cartId) {
-        return ResponseEntity.ok(cartService.getCartDisplay(cartId));
+    public ResponseEntity<CartDto> getCart(
+            @PathVariable String cartId,
+            @RequestParam(defaultValue = "productName") String sortBy,
+            @RequestParam(defaultValue = "asc") String direction) {
+        return ResponseEntity.ok(cartService.getCartDisplay(cartId, sortBy, direction));
     }
 
     @PostMapping("/{cartId}/items")
