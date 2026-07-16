@@ -26,8 +26,16 @@ public class CartService {
             "productName", Comparator.comparing(CartItemResponse::productName, String.CASE_INSENSITIVE_ORDER),
             "productPrice", Comparator.comparing(CartItemResponse::productPrice),
             "quantity", Comparator.comparingInt(CartItemResponse::quantity),
-            "subTotal", Comparator.comparing(CartItemResponse::subTotal)
+            "subTotal", Comparator.comparing(CartItemResponse::subTotal),
+            "createdAt", Comparator.comparing(CartItemResponse::createdAt)
     );
+
+    private Comparator<CartItemResponse> buildComparator(String sortBy, String direction) {
+        Comparator<CartItemResponse> comparator = SORT_COMPARATORS.getOrDefault(
+                sortBy, SORT_COMPARATORS.get("createdAt"));
+
+        return "desc".equalsIgnoreCase(direction) ? comparator.reversed() : comparator;
+    }
 
     @Transactional
     public CartDto addProduct(String cartId, String productId, int quantityToAdd) {
@@ -84,13 +92,6 @@ public class CartService {
         Cart cart = findCartOrThrow(cartId);
         Comparator<CartItemResponse> comparator = buildComparator(sortBy, direction);
         return CartDto.from(cart, comparator);
-    }
-
-    private Comparator<CartItemResponse> buildComparator(String sortBy, String direction) {
-        Comparator<CartItemResponse> comparator = SORT_COMPARATORS.getOrDefault(
-                sortBy, SORT_COMPARATORS.get("productName"));
-
-        return "desc".equalsIgnoreCase(direction) ? comparator.reversed() : comparator;
     }
 
     private Cart findCartOrThrow(String cartId) {

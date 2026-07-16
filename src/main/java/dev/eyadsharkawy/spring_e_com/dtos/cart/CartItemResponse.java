@@ -3,6 +3,7 @@ package dev.eyadsharkawy.spring_e_com.dtos.cart;
 import dev.eyadsharkawy.spring_e_com.entities.CartItem;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 
 public record CartItemResponse(
         String productId,
@@ -11,7 +12,8 @@ public record CartItemResponse(
         BigDecimal productPrice,
         int quantity,
         int availableStock,
-        BigDecimal subTotal
+        BigDecimal subTotal,
+        Instant createdAt
 ) {
     public static CartItemResponse from(CartItem item) {
         BigDecimal price = item.getProduct().getPrice();
@@ -25,7 +27,8 @@ public record CartItemResponse(
                 price,
                 quantity,
                 item.getProduct().getStock(),
-                subTotal
+                subTotal,
+                item.getCreatedAt()
         );
     }
 }

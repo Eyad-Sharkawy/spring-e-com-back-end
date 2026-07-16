@@ -20,8 +20,8 @@ public class ProductController {
 
     @GetMapping
     public ResponseEntity<List<ProductResponse>> getAllProducts(
-            @RequestParam(defaultValue = "name") String sortBy,
-            @RequestParam(defaultValue = "asc") String direction) {
+            @RequestParam(defaultValue = "updatedAt") String sortBy,
+            @RequestParam(defaultValue = "desc") String direction) {
         return ResponseEntity.ok(productService.getAllProducts(sortBy, direction));
     }
 

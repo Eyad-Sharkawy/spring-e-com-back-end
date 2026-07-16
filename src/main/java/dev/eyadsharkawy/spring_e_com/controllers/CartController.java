@@ -17,7 +17,7 @@ public class CartController {
     @GetMapping("/{cartId}")
     public ResponseEntity<CartDto> getCart(
             @PathVariable String cartId,
-            @RequestParam(defaultValue = "productName") String sortBy,
+            @RequestParam(defaultValue = "createdAt") String sortBy,
             @RequestParam(defaultValue = "asc") String direction) {
         return ResponseEntity.ok(cartService.getCartDisplay(cartId, sortBy, direction));
     }

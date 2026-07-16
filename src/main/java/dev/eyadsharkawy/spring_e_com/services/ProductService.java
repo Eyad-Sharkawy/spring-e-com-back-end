@@ -18,7 +18,7 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class ProductService {
 
-    private static final Set<String> ALLOWED_SORT_FIELDS = Set.of("name", "price", "stock");
+    private static final Set<String> ALLOWED_SORT_FIELDS = Set.of("name", "price", "stock", "createdAt", "updatedAt");
 
     private final ProductRepository productRepository;
 
@@ -29,7 +29,9 @@ public class ProductService {
                 product.getName(),
                 product.getDescription(),
                 product.getPrice(),
-                product.getStock()
+                product.getStock(),
+                product.getCreatedAt(),
+                product.getUpdatedAt()
         );
     }
 
@@ -39,11 +41,11 @@ public class ProductService {
     }
 
     public List<ProductResponse> getAllProducts(String sortBy, String direction) {
-        String safeSortField = ALLOWED_SORT_FIELDS.contains(sortBy) ? sortBy : "name";
+        String safeSortField = ALLOWED_SORT_FIELDS.contains(sortBy) ? sortBy : "updatedAt";
 
-        Sort.Direction sortDirection = "desc".equalsIgnoreCase(direction)
-                ? Sort.Direction.DESC
-                : Sort.Direction.ASC;
+        Sort.Direction sortDirection = "asc".equalsIgnoreCase(direction)
+                ? Sort.Direction.ASC
+                : Sort.Direction.DESC;
 
         Sort sort = Sort.by(sortDirection, safeSortField);
 
