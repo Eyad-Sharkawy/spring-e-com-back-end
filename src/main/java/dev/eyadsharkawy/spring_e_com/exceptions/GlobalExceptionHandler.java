@@ -23,6 +23,11 @@ public class GlobalExceptionHandler {
         return build(HttpStatus.BAD_REQUEST, ex.getMessage());
     }
 
+    @ExceptionHandler(EmptyCartException.class)
+    public ResponseEntity<ErrorResponse> handleEmptyCartException(RuntimeException ex) {
+        return build(HttpStatus.BAD_REQUEST, ex.getMessage());
+    }
+
     private ResponseEntity<ErrorResponse> build(HttpStatus status, String message) {
         ErrorResponse error = new ErrorResponse(status.value(), message, System.currentTimeMillis());
         return new ResponseEntity<>(error, status);
