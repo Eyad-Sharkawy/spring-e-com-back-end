@@ -17,7 +17,14 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
             cd /home/ubuntu/spring-e-com-back-end
-            git pull origin main
+            
+            # Force server to match GitHub exactly
+            git fetch origin
+            git reset --hard origin/main
+            
+            # Grant permissions and build
             chmod +x mvnw
             ./mvnw clean package -DskipTests
+            
+            # Restart the service
             sudo systemctl restart spring-e-com.service
