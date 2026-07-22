@@ -6,8 +6,8 @@ REST API for a full-stack e-commerce application. It powers product catalog mana
 
 | App | URL |
 | --- | --- |
-| Frontend | [https://spring-e-com.vercel.app/](https://spring-e-com.vercel.app/) |
-| Backend API | [https://spring-e-com.duckdns.org/](https://spring-e-com.duckdns.org/) |
+| Frontend | [https://spring-e-com.vercel.app](https://spring-e-com.vercel.app) |
+| Backend API | [https://spring-e-com.duckdns.org](https://spring-e-com.duckdns.org) |
 
 ## Related repositories
 
