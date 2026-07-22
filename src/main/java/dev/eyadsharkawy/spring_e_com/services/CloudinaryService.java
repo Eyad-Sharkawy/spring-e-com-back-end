@@ -17,11 +17,9 @@ import java.util.Map;
 public class CloudinaryService {
     private final Cloudinary cloudinary;
 
-    public record UploadResult(String url, String publicId) {
-    }
-
     public UploadResult uploadImage(MultipartFile file) {
         String contentType = file.getContentType();
+
         if (contentType == null || !contentType.startsWith("image/")) {
             throw new ImageUploadException("Only image files are allowed", null);
         }
@@ -62,5 +60,8 @@ public class CloudinaryService {
         } catch (IOException e) {
             throw new ImageUploadException("Failed to delete image from Cloudinary", e);
         }
+    }
+
+    public record UploadResult(String url, String publicId) {
     }
 }

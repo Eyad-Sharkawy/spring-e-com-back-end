@@ -19,9 +19,6 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 public class CartService {
-    private final CartRepository cartRepository;
-    private final ProductRepository productRepository;
-
     private static final Map<String, Comparator<CartItemResponse>> SORT_COMPARATORS = Map.of(
             "productName", Comparator.comparing(CartItemResponse::productName, String.CASE_INSENSITIVE_ORDER),
             "productPrice", Comparator.comparing(CartItemResponse::productPrice),
@@ -29,6 +26,8 @@ public class CartService {
             "subTotal", Comparator.comparing(CartItemResponse::subTotal),
             "createdAt", Comparator.comparing(CartItemResponse::createdAt)
     );
+    private final CartRepository cartRepository;
+    private final ProductRepository productRepository;
 
     private Comparator<CartItemResponse> buildComparator(String sortBy, String direction) {
         Comparator<CartItemResponse> comparator = SORT_COMPARATORS.getOrDefault(
