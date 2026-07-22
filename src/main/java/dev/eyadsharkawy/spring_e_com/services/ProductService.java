@@ -10,6 +10,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Set;
@@ -22,6 +23,8 @@ public class ProductService {
 
     private final ProductRepository productRepository;
 
+    private final CloudinaryService cloudinaryService;
+
     private ProductResponse mapToDto(Product product) {
         return new ProductResponse(
                 product.getId(),
@@ -31,7 +34,8 @@ public class ProductService {
                 product.getPrice(),
                 product.getStock(),
                 product.getCreatedAt(),
-                product.getUpdatedAt()
+                product.getUpdatedAt(),
+                product.getImageUrl()
         );
     }
 
@@ -62,9 +66,12 @@ public class ProductService {
 
     @Transactional
     public void deleteProduct(String id) {
-        if (!productRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Product not found: " + id);
+        Product product = getProductEntityById(id);
+
+        if (product.getImagePublicId() != null) {
+            cloudinaryService.deleteImage(product.getImagePublicId());
         }
+
         productRepository.deleteById(id);
     }
 
@@ -103,5 +110,20 @@ public class ProductService {
         existingProduct.setStock(request.stock());
 
         return mapToDto(existingProduct);
+    }
+
+    @Transactional
+    public ProductResponse updateProductImage(String id, MultipartFile file) {
+        Product product = getProductEntityById(id);
+
+        if (product.getImagePublicId() != null) {
+            cloudinaryService.deleteImage(product.getImagePublicId());
+        }
+
+        CloudinaryService.UploadResult result = cloudinaryService.uploadImage(file);
+        product.setImageUrl(result.url());
+        product.setImagePublicId(result.publicId());
+
+        return mapToDto(product);
     }
 }

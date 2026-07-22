@@ -38,4 +38,10 @@ public class Product {
 
     @LastModifiedDate
     private Instant updatedAt;
+
+    @Column(name = "image_url")
+    private String imageUrl;
+
+    @Column(name = "image_public_id")
+    private String imagePublicId;
 }
