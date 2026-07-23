@@ -12,6 +12,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
@@ -55,6 +56,7 @@ public class ProductService {
 
         return productRepository.findAll(sort)
                 .stream()
+                .sorted(Comparator.comparing(product -> product.getStock() == 0))
                 .map(this::mapToDto)
                 .toList();
     }
