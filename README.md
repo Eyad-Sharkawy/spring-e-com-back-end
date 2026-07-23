@@ -21,14 +21,15 @@ REST API for a full-stack e-commerce application. It powers product catalog mana
 - **Java 21**
 - **Spring Boot 4.1** — Web MVC, Data JPA, Validation
 - **PostgreSQL** — persistent storage
+- **Cloudinary** — cloud-based image storage and management
 - **Lombok** — boilerplate reduction
 - **Docker** — containerized builds
 - **GitHub Actions** — automated deployment to an Oracle Cloud server
 
 ## Features
 
-- **Products** — full CRUD with sorting by name, price, stock, or timestamps
-- **Shopping cart** — add, update, and remove items; cart totals computed server-side
+- **Products** — full CRUD with sorting, two-level sorting (in-stock first, then out-of-stock), and image uploads via Cloudinary
+- **Shopping cart** — add, update, and remove items (cart items include product image URLs); cart totals computed server-side
 - **Checkout** — converts a cart into an order, reduces product stock, and clears the cart
 - **Stock validation** — prevents adding to cart or checking out when stock is insufficient
 - **CORS** — configurable allowed origins for the frontend
@@ -47,6 +48,13 @@ Base path: `/api`
 | `POST` | `/products` | Create a product |
 | `PUT` | `/products/{id}` | Update a product |
 | `DELETE` | `/products/{id}` | Delete a product |
+| `POST` | `/products/{id}/image` | Upload/update product image (multipart/form-data) |
+
+**Two-Level Sorting**
+
+When listing products, the API automatically partitions the results:
+1. **In-stock products** (`stock > 0`) are returned first, sorted by the specified `sortBy` and `direction` parameters.
+2. **Out-of-stock products** (`stock == 0`) are returned next, also sorted by the specified parameters.
 
 **Create / update body**
 
@@ -129,6 +137,9 @@ The `.env` file is loaded automatically via `spring-dotenv`. See [`.env.example`
 | `DB_PASSWORD` | Database password | — |
 | `DB_DRIVER` | JDBC driver class | — |
 | `DB_DIALECT` | Hibernate dialect | — |
+| `CLOUDINARY_CLOUD_NAME` | Cloudinary cloud name | — |
+| `CLOUDINARY_API_KEY` | Cloudinary API key | — |
+| `CLOUDINARY_API_SECRET` | Cloudinary API secret | — |
 | `CORS_ALLOWED_ORIGINS` | Comma-separated allowed origins | `http://localhost:4200` |
 | `PORT` | Server port | `8080` |
 
