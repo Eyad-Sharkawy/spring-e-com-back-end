@@ -5,6 +5,7 @@ import dev.eyadsharkawy.spring_e_com.dtos.product.ProductResponse;
 import dev.eyadsharkawy.spring_e_com.entities.Product;
 import dev.eyadsharkawy.spring_e_com.exceptions.InsufficientStockException;
 import dev.eyadsharkawy.spring_e_com.exceptions.ResourceNotFoundException;
+import dev.eyadsharkawy.spring_e_com.repositories.CartItemRepository;
 import dev.eyadsharkawy.spring_e_com.repositories.ProductRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,8 @@ public class ProductService {
     private static final Set<String> ALLOWED_SORT_FIELDS = Set.of("name", "price", "stock", "createdAt", "updatedAt");
 
     private final ProductRepository productRepository;
+
+    private final CartItemRepository cartItemRepository;
 
     private final CloudinaryService cloudinaryService;
 
@@ -69,11 +72,17 @@ public class ProductService {
     @Transactional
     public void deleteProduct(String id) {
         Product product = getProductEntityById(id);
+        String imagePublicId = product.getImagePublicId();
 
-        if (product.getImagePublicId() != null) {
-            cloudinaryService.deleteImage(product.getImagePublicId());
+        if (imagePublicId != null) {
+            try {
+                cloudinaryService.deleteImage(imagePublicId);
+            } catch (Exception e) {
+                System.err.println("Failed to delete image from Cloudinary: " + e.getMessage());
+            }
         }
 
+        cartItemRepository.deleteByProductId(id);
         productRepository.deleteById(id);
     }
 
@@ -114,18 +123,23 @@ public class ProductService {
         return mapToDto(existingProduct);
     }
 
-    @Transactional
     public ProductResponse updateProductImage(String id, MultipartFile file) {
         Product product = getProductEntityById(id);
+        String oldImagePublicId = product.getImagePublicId();
 
-        if (product.getImagePublicId() != null) {
-            cloudinaryService.deleteImage(product.getImagePublicId());
+        if (oldImagePublicId != null) {
+            try {
+                cloudinaryService.deleteImage(oldImagePublicId);
+            } catch (Exception e) {
+                System.err.println("Failed to delete old image from Cloudinary: " + e.getMessage());
+            }
         }
 
         CloudinaryService.UploadResult result = cloudinaryService.uploadImage(file);
         product.setImageUrl(result.url());
         product.setImagePublicId(result.publicId());
 
-        return mapToDto(product);
+        Product savedProduct = productRepository.save(product);
+        return mapToDto(savedProduct);
     }
 }

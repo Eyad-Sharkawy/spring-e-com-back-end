@@ -38,13 +38,23 @@ public class CloudinaryService {
                                             .height(800)
                                             .quality("auto")
                                             .fetchFormat("auto")
-                            )
+                             )
                     )
             );
 
-            @SuppressWarnings("unchecked")
-            List<Map<String, Object>> eagerResults = (List<Map<String, Object>>) result.get("eager");
-            String croppedUrl = (String) eagerResults.get(0).get("secure_url");
+            String secureUrl = (String) result.get("secure_url");
+            if (secureUrl == null) {
+                secureUrl = (String) result.get("url");
+            }
+
+            String croppedUrl = secureUrl;
+            if (result.containsKey("eager")) {
+                @SuppressWarnings("unchecked")
+                List<Map<String, Object>> eagerResults = (List<Map<String, Object>>) result.get("eager");
+                if (eagerResults != null && !eagerResults.isEmpty()) {
+                    croppedUrl = (String) eagerResults.get(0).get("secure_url");
+                }
+            }
 
             return new UploadResult(croppedUrl, (String) result.get("public_id"));
         } catch (IOException e) {
