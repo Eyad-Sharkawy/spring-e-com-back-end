@@ -26,9 +26,8 @@ jobs:
             git fetch origin
             git reset --hard origin/main
             
-            # Grant permissions and build
-            chmod +x mvnw
-            ./mvnw clean package -DskipTests
+            # Build the new image and seamlessly restart the Spring Boot container
+            sudo docker compose up -d --build
             
-            # Restart the service
-            sudo systemctl restart spring-e-com.service
+            # Clean up old, unused Docker images to save disk space
+            sudo docker image prune -f

@@ -28,7 +28,7 @@ REST API for a full-stack e-commerce application. It powers product catalog mana
 
 ## Features
 
-- **Products** — full CRUD with sorting, two-level sorting (in-stock first, then out-of-stock), and image uploads via Cloudinary
+- **Products** — full CRUD with sorting, two-level sorting (in-stock first, then out-of-stock), image uploads via Cloudinary, and safe deletion (automatically cascades to remove the deleted product from shopping carts)
 - **Shopping cart** — add, update, and remove items (cart items include product image URLs); cart totals computed server-side
 - **Checkout** — converts a cart into an order, reduces product stock, and clears the cart
 - **Stock validation** — prevents adding to cart or checking out when stock is insufficient
