@@ -1,6 +1,6 @@
 package dev.eyadsharkawy.spring_e_com.dtos.cart;
 
-import dev.eyadsharkawy.spring_e_com.entities.CartItem;
+import dev.eyadsharkawy.spring_e_com.entities.cart.CartItem;
 
 import java.math.BigDecimal;
 import java.time.Instant;

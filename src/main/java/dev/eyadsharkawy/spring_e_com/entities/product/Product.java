@@ -1,5 +1,6 @@
-package dev.eyadsharkawy.spring_e_com.entities;
+package dev.eyadsharkawy.spring_e_com.entities.product;
 
+import dev.eyadsharkawy.spring_e_com.exceptions.InsufficientStockException;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -49,4 +50,18 @@ public class Product {
 
     @Column(name = "image_public_id")
     private String imagePublicId;
+
+    public void decreaseStock(int quantityBought) {
+        if (stock < quantityBought) {
+            throw new InsufficientStockException(
+                    "Insufficient stock for " + this.name + ". Only " + this.stock + " left."
+            );
+        }
+        stock -= quantityBought;
+    }
+
+    public void updateImage(String newImageUrl, String newImagePublicId) {
+        this.imageUrl = newImageUrl;
+        this.imagePublicId = newImagePublicId;
+    }
 }

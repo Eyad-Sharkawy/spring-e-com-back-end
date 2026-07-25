@@ -2,10 +2,8 @@ package dev.eyadsharkawy.spring_e_com.services;
 
 import dev.eyadsharkawy.spring_e_com.dtos.cart.CartDto;
 import dev.eyadsharkawy.spring_e_com.dtos.cart.CartItemResponse;
-import dev.eyadsharkawy.spring_e_com.entities.Cart;
-import dev.eyadsharkawy.spring_e_com.entities.CartItem;
-import dev.eyadsharkawy.spring_e_com.entities.Product;
-import dev.eyadsharkawy.spring_e_com.exceptions.InsufficientStockException;
+import dev.eyadsharkawy.spring_e_com.entities.cart.Cart;
+import dev.eyadsharkawy.spring_e_com.entities.product.Product;
 import dev.eyadsharkawy.spring_e_com.exceptions.ResourceNotFoundException;
 import dev.eyadsharkawy.spring_e_com.repositories.CartRepository;
 import dev.eyadsharkawy.spring_e_com.repositories.ProductRepository;
@@ -26,6 +24,7 @@ public class CartService {
             "subTotal", Comparator.comparing(CartItemResponse::subTotal),
             "createdAt", Comparator.comparing(CartItemResponse::createdAt)
     );
+
     private final CartRepository cartRepository;
     private final ProductRepository productRepository;
 
@@ -41,33 +40,7 @@ public class CartService {
         Cart cart = findCartOrThrow(cartId);
         Product product = findProductOrThrow(productId);
 
-        int currentQuantity = cart.getItems().stream()
-                .filter(item -> item.getProduct().getId().equals(productId))
-                .findFirst()
-                .map(CartItem::getQuantity)
-                .orElse(0);
-
-        int totalRequested = currentQuantity + quantityToAdd;
-
-        if (totalRequested > product.getStock()) {
-            throw new InsufficientStockException(
-                    "Insufficient stock for " + product.getName() + ". Only " + product.getStock() + " left."
-            );
-        }
-
-        cart.getItems().stream()
-                .filter(item -> item.getProduct().getId().equals(productId))
-                .findFirst()
-                .ifPresentOrElse(
-                        existing -> existing.setQuantity(totalRequested),
-                        () -> {
-                            CartItem newItem = new CartItem();
-
-                            newItem.setProduct(product);
-                            newItem.setQuantity(totalRequested);
-                            cart.addItem(newItem);
-                        }
-                );
+        cart.addOrUpdateProduct(product, quantityToAdd);
 
         return CartDto.from(cartRepository.save(cart));
     }
@@ -76,13 +49,7 @@ public class CartService {
     public CartDto removeProductFromCart(String cartId, String productId) {
         Cart cart = findCartOrThrow(cartId);
 
-        cart.getItems().removeIf(item -> {
-            boolean matches = item.getProduct().getId().equals(productId);
-            if (matches) {
-                item.setCart(null);
-            }
-            return matches;
-        });
+        cart.removeProductById(productId);
 
         return CartDto.from(cartRepository.save(cart));
     }
@@ -105,28 +72,9 @@ public class CartService {
 
     @Transactional
     public CartDto updateItemQuantity(String cartId, String productId, int newQuantity) {
-        if (newQuantity <= 0) {
-            throw new IllegalArgumentException("Quantity must be greater than zero");
-        }
-
         Cart cart = findCartOrThrow(cartId);
 
-        CartItem item = cart.getItems().stream()
-                .filter(i -> i.getProduct().getId().equals(productId))
-                .findFirst()
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "Product " + productId + " not in cart " + cartId));
-
-        int currentStock = item.getProduct().getStock();
-
-        if (newQuantity > currentStock) {
-            throw new InsufficientStockException(
-                    "Insufficient stock for " + item.getProduct().getName()
-                            + ". Only " + item.getProduct().getStock() + " left."
-            );
-        }
-
-        item.setQuantity(newQuantity);
+        cart.updateItemQuantity(productId, newQuantity);
 
         return CartDto.from(cartRepository.save(cart));
     }

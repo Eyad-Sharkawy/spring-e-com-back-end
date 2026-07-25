@@ -1,5 +1,6 @@
-package dev.eyadsharkawy.spring_e_com.entities;
+package dev.eyadsharkawy.spring_e_com.entities.order;
 
+import dev.eyadsharkawy.spring_e_com.entities.product.Product;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,4 +27,14 @@ public class OrderItem {
     private BigDecimal productPrice;
     private int quantity;
     private BigDecimal subTotal;
+
+    public static OrderItem createFrom(Product product, int quantity) {
+        OrderItem item = new OrderItem();
+        item.setProductId(product.getId());
+        item.setProductName(product.getName());
+        item.setProductPrice(product.getPrice());
+        item.setQuantity(quantity);
+        item.setSubTotal(product.getPrice().multiply(BigDecimal.valueOf(quantity)));
+        return item;
+    }
 }

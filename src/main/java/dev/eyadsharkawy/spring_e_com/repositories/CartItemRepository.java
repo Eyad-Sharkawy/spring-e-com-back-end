@@ -1,6 +1,6 @@
 package dev.eyadsharkawy.spring_e_com.repositories;
 
-import dev.eyadsharkawy.spring_e_com.entities.CartItem;
+import dev.eyadsharkawy.spring_e_com.entities.cart.CartItem;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

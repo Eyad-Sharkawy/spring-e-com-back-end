@@ -1,6 +1,6 @@
 package dev.eyadsharkawy.spring_e_com.dtos.cart;
 
-import dev.eyadsharkawy.spring_e_com.entities.Cart;
+import dev.eyadsharkawy.spring_e_com.entities.cart.Cart;
 
 import java.math.BigDecimal;
 import java.util.Comparator;

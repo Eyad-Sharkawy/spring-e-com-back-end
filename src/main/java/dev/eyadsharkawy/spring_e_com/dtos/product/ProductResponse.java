@@ -1,6 +1,6 @@
 package dev.eyadsharkawy.spring_e_com.dtos.product;
 
-import dev.eyadsharkawy.spring_e_com.entities.Product;
+import dev.eyadsharkawy.spring_e_com.entities.product.Product;
 
 import java.math.BigDecimal;
 import java.time.Instant;

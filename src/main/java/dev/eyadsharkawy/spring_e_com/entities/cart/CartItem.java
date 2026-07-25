@@ -1,5 +1,6 @@
-package dev.eyadsharkawy.spring_e_com.entities;
+package dev.eyadsharkawy.spring_e_com.entities.cart;
 
+import dev.eyadsharkawy.spring_e_com.entities.product.Product;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

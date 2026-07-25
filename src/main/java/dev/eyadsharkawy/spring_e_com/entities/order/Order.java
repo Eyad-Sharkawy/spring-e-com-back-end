@@ -1,4 +1,4 @@
-package dev.eyadsharkawy.spring_e_com.entities;
+package dev.eyadsharkawy.spring_e_com.entities.order;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -26,7 +26,7 @@ public class Order {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> items = new ArrayList<>();
 
-    private BigDecimal totalAmount;
+    private BigDecimal totalAmount= BigDecimal.ZERO;
 
     @CreatedDate
     private Instant createdAt;
@@ -34,5 +34,6 @@ public class Order {
     public void addItem(OrderItem item) {
         items.add(item);
         item.setOrder(this);
+        this.totalAmount = this.totalAmount.add(item.getSubTotal());
     }
 }

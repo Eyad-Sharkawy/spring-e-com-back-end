@@ -4,8 +4,7 @@ import dev.eyadsharkawy.spring_e_com.dtos.product.CloudinarySignatureResponse;
 import dev.eyadsharkawy.spring_e_com.dtos.product.CloudinaryUploadConfirmRequest;
 import dev.eyadsharkawy.spring_e_com.dtos.product.ProductRequest;
 import dev.eyadsharkawy.spring_e_com.dtos.product.ProductResponse;
-import dev.eyadsharkawy.spring_e_com.entities.Product;
-import dev.eyadsharkawy.spring_e_com.exceptions.InsufficientStockException;
+import dev.eyadsharkawy.spring_e_com.entities.product.Product;
 import dev.eyadsharkawy.spring_e_com.exceptions.ResourceNotFoundException;
 import dev.eyadsharkawy.spring_e_com.repositories.CartItemRepository;
 import dev.eyadsharkawy.spring_e_com.repositories.ProductRepository;
@@ -52,11 +51,6 @@ public class ProductService {
                 .toList();
     }
 
-    public ProductResponse getProductById(String id) {
-        Product product = getProductEntityById(id);
-        return ProductResponse.from(product);
-    }
-
     public ProductResponse getProductBySlugOrId(String identifier) {
         Product product = productRepository.findBySlug(identifier)
                 .orElseGet(() -> productRepository.findById(identifier)
@@ -78,12 +72,9 @@ public class ProductService {
     public void reduceStock(String id, int quantityBought) {
         Product product = getProductEntityById(id);
 
-        if (product.getStock() < quantityBought) {
-            throw new InsufficientStockException(
-                    "Insufficient stock for " + product.getName() + ". Only " + product.getStock() + " left."
-            );
-        }
-        product.setStock(product.getStock() - quantityBought);
+        product.decreaseStock(quantityBought);
+
+        productRepository.save(product);
     }
 
     @Transactional
@@ -124,8 +115,8 @@ public class ProductService {
         deleteCloudinaryImageSafely(oldImagePublicId);
 
         CloudinaryService.UploadResult result = cloudinaryService.uploadImage(file);
-        product.setImageUrl(result.url());
-        product.setImagePublicId(result.publicId());
+
+        product.updateImage(result.url(), result.publicId());
 
         Product savedProduct = productRepository.save(product);
         return ProductResponse.from(savedProduct);
@@ -142,8 +133,7 @@ public class ProductService {
 
         deleteCloudinaryImageSafely(oldImagePublicId);
 
-        product.setImageUrl(request.url());
-        product.setImagePublicId(request.publicId());
+        product.updateImage(request.url(), request.publicId());
 
         Product savedProduct = productRepository.save(product);
         return ProductResponse.from(savedProduct);
@@ -167,17 +157,17 @@ public class ProductService {
         }
         String candidateSlug = baseSlug;
         while (productRepository.existsBySlug(candidateSlug)) {
-            String randomSuffix = generateRandomString(4);
+            String randomSuffix = generateRandomString();
             candidateSlug = baseSlug + "-" + randomSuffix;
         }
         return candidateSlug;
     }
 
-    private String generateRandomString(int length) {
+    private String generateRandomString() {
         String chars = "abcdefghijklmnopqrstuvwxyz0123456789";
         java.security.SecureRandom random = new java.security.SecureRandom();
-        StringBuilder sb = new StringBuilder(length);
-        for (int i = 0; i < length; i++) {
+        StringBuilder sb = new StringBuilder(4);
+        for (int i = 0; i < 4; i++) {
             sb.append(chars.charAt(random.nextInt(chars.length())));
         }
         return sb.toString();

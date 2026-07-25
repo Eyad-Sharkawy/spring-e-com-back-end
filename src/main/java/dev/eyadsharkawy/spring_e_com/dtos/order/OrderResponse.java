@@ -1,6 +1,6 @@
 package dev.eyadsharkawy.spring_e_com.dtos.order;
 
-import dev.eyadsharkawy.spring_e_com.entities.Order;
+import dev.eyadsharkawy.spring_e_com.entities.order.Order;
 
 import java.math.BigDecimal;
 import java.time.Instant;
