@@ -8,14 +8,43 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import dev.eyadsharkawy.spring_e_com.dtos.product.CloudinarySignatureResponse;
+
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class CloudinaryService {
     private final Cloudinary cloudinary;
+
+    public CloudinarySignatureResponse generateSignature(String productId) {
+        long timestamp = System.currentTimeMillis() / 1000L;
+        String folder = "spring-e-com/products";
+        String publicId = "products_" + productId + "_" + UUID.randomUUID();
+        String eager = "c_fill,g_auto,w_800,h_800,q_auto,f_auto";
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("timestamp", timestamp);
+        params.put("folder", folder);
+        params.put("public_id", publicId);
+        params.put("eager", eager);
+
+        String signature = cloudinary.apiSignRequest(params, cloudinary.config.apiSecret);
+
+        return new CloudinarySignatureResponse(
+                signature,
+                timestamp,
+                cloudinary.config.apiKey,
+                cloudinary.config.cloudName,
+                publicId,
+                folder,
+                eager
+        );
+    }
 
     public UploadResult uploadImage(MultipartFile file) {
         String contentType = file.getContentType();

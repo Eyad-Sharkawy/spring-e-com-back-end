@@ -1,5 +1,7 @@
 package dev.eyadsharkawy.spring_e_com.controllers;
 
+import dev.eyadsharkawy.spring_e_com.dtos.product.CloudinarySignatureResponse;
+import dev.eyadsharkawy.spring_e_com.dtos.product.CloudinaryUploadConfirmRequest;
 import dev.eyadsharkawy.spring_e_com.dtos.product.ProductRequest;
 import dev.eyadsharkawy.spring_e_com.dtos.product.ProductResponse;
 import dev.eyadsharkawy.spring_e_com.services.ProductService;
@@ -55,5 +57,17 @@ public class ProductController {
             @RequestParam("file") MultipartFile file) {
         ProductResponse updated = productService.updateProductImage(id, file);
         return ResponseEntity.ok(updated);
+    }
+
+    @PostMapping("/{id}/image/signature")
+    public ResponseEntity<CloudinarySignatureResponse> getUploadSignature(@PathVariable String id) {
+        return ResponseEntity.ok(productService.getUploadSignature(id));
+    }
+
+    @PostMapping("/{id}/image/confirm")
+    public ResponseEntity<ProductResponse> confirmUpload(
+            @PathVariable String id,
+            @Valid @RequestBody CloudinaryUploadConfirmRequest request) {
+        return ResponseEntity.ok(productService.confirmProductImage(id, request));
     }
 }

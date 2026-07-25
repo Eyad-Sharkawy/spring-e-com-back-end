@@ -1,5 +1,7 @@
 package dev.eyadsharkawy.spring_e_com.services;
 
+import dev.eyadsharkawy.spring_e_com.dtos.product.CloudinarySignatureResponse;
+import dev.eyadsharkawy.spring_e_com.dtos.product.CloudinaryUploadConfirmRequest;
 import dev.eyadsharkawy.spring_e_com.dtos.product.ProductRequest;
 import dev.eyadsharkawy.spring_e_com.dtos.product.ProductResponse;
 import dev.eyadsharkawy.spring_e_com.entities.Product;
@@ -138,6 +140,31 @@ public class ProductService {
         CloudinaryService.UploadResult result = cloudinaryService.uploadImage(file);
         product.setImageUrl(result.url());
         product.setImagePublicId(result.publicId());
+
+        Product savedProduct = productRepository.save(product);
+        return mapToDto(savedProduct);
+    }
+
+    public CloudinarySignatureResponse getUploadSignature(String productId) {
+        getProductEntityById(productId);
+        return cloudinaryService.generateSignature(productId);
+    }
+
+    @Transactional
+    public ProductResponse confirmProductImage(String id, CloudinaryUploadConfirmRequest request) {
+        Product product = getProductEntityById(id);
+        String oldImagePublicId = product.getImagePublicId();
+
+        if (oldImagePublicId != null) {
+            try {
+                cloudinaryService.deleteImage(oldImagePublicId);
+            } catch (Exception e) {
+                System.err.println("Failed to delete old image from Cloudinary: " + e.getMessage());
+            }
+        }
+
+        product.setImageUrl(request.url());
+        product.setImagePublicId(request.publicId());
 
         Product savedProduct = productRepository.save(product);
         return mapToDto(savedProduct);
