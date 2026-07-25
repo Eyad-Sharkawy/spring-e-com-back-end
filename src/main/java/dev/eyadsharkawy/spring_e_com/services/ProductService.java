@@ -72,9 +72,10 @@ public class ProductService {
         return mapToDto(product);
     }
 
-    public ProductResponse getProductBySlug(String slug) {
-        Product product = productRepository.findBySlug(slug)
-                .orElseThrow(() -> new ResourceNotFoundException("Product not found with slug: " + slug));
+    public ProductResponse getProductBySlugOrId(String identifier) {
+        Product product = productRepository.findBySlug(identifier)
+                .orElseGet(() -> productRepository.findById(identifier)
+                        .orElseThrow(() -> new ResourceNotFoundException("Product not found with identifier: " + identifier)));
         return mapToDto(product);
     }
 
