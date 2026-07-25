@@ -31,21 +31,6 @@ public class ProductService {
 
     private final CloudinaryService cloudinaryService;
 
-    private ProductResponse mapToDto(Product product) {
-        return new ProductResponse(
-                product.getId(),
-                product.getSeller(),
-                product.getName(),
-                product.getDescription(),
-                product.getPrice(),
-                product.getStock(),
-                product.getCreatedAt(),
-                product.getUpdatedAt(),
-                product.getImageUrl(),
-                product.getSlug()
-        );
-    }
-
     private Product getProductEntityById(String id) {
         return productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found: " + id));
@@ -63,34 +48,27 @@ public class ProductService {
         return productRepository.findAll(sort)
                 .stream()
                 .sorted(Comparator.comparing(product -> product.getStock() == 0))
-                .map(this::mapToDto)
+                .map(ProductResponse::from)
                 .toList();
     }
 
     public ProductResponse getProductById(String id) {
         Product product = getProductEntityById(id);
-        return mapToDto(product);
+        return ProductResponse.from(product);
     }
 
     public ProductResponse getProductBySlugOrId(String identifier) {
         Product product = productRepository.findBySlug(identifier)
                 .orElseGet(() -> productRepository.findById(identifier)
                         .orElseThrow(() -> new ResourceNotFoundException("Product not found with identifier: " + identifier)));
-        return mapToDto(product);
+        return ProductResponse.from(product);
     }
 
-    @Transactional
     public void deleteProduct(String id) {
         Product product = getProductEntityById(id);
         String imagePublicId = product.getImagePublicId();
 
-        if (imagePublicId != null) {
-            try {
-                cloudinaryService.deleteImage(imagePublicId);
-            } catch (Exception e) {
-                System.err.println("Failed to delete image from Cloudinary: " + e.getMessage());
-            }
-        }
+        deleteCloudinaryImageSafely(imagePublicId);
 
         cartItemRepository.deleteByProductId(id);
         productRepository.deleteById(id);
@@ -99,6 +77,7 @@ public class ProductService {
     @Transactional
     public void reduceStock(String id, int quantityBought) {
         Product product = getProductEntityById(id);
+
         if (product.getStock() < quantityBought) {
             throw new InsufficientStockException(
                     "Insufficient stock for " + product.getName() + ". Only " + product.getStock() + " left."
@@ -118,7 +97,7 @@ public class ProductService {
         newProduct.setSlug(generateUniqueSlug(request.name()));
 
         Product savedProduct = productRepository.save(newProduct);
-        return mapToDto(savedProduct);
+        return ProductResponse.from(savedProduct);
     }
 
     @Transactional
@@ -135,27 +114,21 @@ public class ProductService {
         existingProduct.setPrice(request.price());
         existingProduct.setStock(request.stock());
 
-        return mapToDto(existingProduct);
+        return ProductResponse.from(existingProduct);
     }
 
     public ProductResponse updateProductImage(String id, MultipartFile file) {
         Product product = getProductEntityById(id);
         String oldImagePublicId = product.getImagePublicId();
 
-        if (oldImagePublicId != null) {
-            try {
-                cloudinaryService.deleteImage(oldImagePublicId);
-            } catch (Exception e) {
-                System.err.println("Failed to delete old image from Cloudinary: " + e.getMessage());
-            }
-        }
+        deleteCloudinaryImageSafely(oldImagePublicId);
 
         CloudinaryService.UploadResult result = cloudinaryService.uploadImage(file);
         product.setImageUrl(result.url());
         product.setImagePublicId(result.publicId());
 
         Product savedProduct = productRepository.save(product);
-        return mapToDto(savedProduct);
+        return ProductResponse.from(savedProduct);
     }
 
     public CloudinarySignatureResponse getUploadSignature(String productId) {
@@ -163,24 +136,17 @@ public class ProductService {
         return cloudinaryService.generateSignature(productId);
     }
 
-    @Transactional
     public ProductResponse confirmProductImage(String id, CloudinaryUploadConfirmRequest request) {
         Product product = getProductEntityById(id);
         String oldImagePublicId = product.getImagePublicId();
 
-        if (oldImagePublicId != null) {
-            try {
-                cloudinaryService.deleteImage(oldImagePublicId);
-            } catch (Exception e) {
-                System.err.println("Failed to delete old image from Cloudinary: " + e.getMessage());
-            }
-        }
+        deleteCloudinaryImageSafely(oldImagePublicId);
 
         product.setImageUrl(request.url());
         product.setImagePublicId(request.publicId());
 
         Product savedProduct = productRepository.save(product);
-        return mapToDto(savedProduct);
+        return ProductResponse.from(savedProduct);
     }
 
     public String generateSlug(String input) {
@@ -215,5 +181,17 @@ public class ProductService {
             sb.append(chars.charAt(random.nextInt(chars.length())));
         }
         return sb.toString();
+    }
+
+    private void deleteCloudinaryImageSafely(String imagePublicId) {
+        if (imagePublicId != null) {
+            try {
+                cloudinaryService.deleteImage(imagePublicId);
+            } catch (Exception e) {
+                System.err.println("Failed to delete image from Cloudinary: " + e.getMessage());
+            }
+        }
+
+
     }
 }

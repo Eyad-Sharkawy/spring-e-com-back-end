@@ -3,12 +3,11 @@ package dev.eyadsharkawy.spring_e_com.services;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.Transformation;
 import com.cloudinary.utils.ObjectUtils;
+import dev.eyadsharkawy.spring_e_com.dtos.product.CloudinarySignatureResponse;
 import dev.eyadsharkawy.spring_e_com.exceptions.ImageUploadException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
-import dev.eyadsharkawy.spring_e_com.dtos.product.CloudinarySignatureResponse;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -19,19 +18,22 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class CloudinaryService {
+    private static final String PRODUCT_FOLDER = "spring-e-com/products";
+    private static final String EAGER_TRANSFORMATION_STRING = "c_fill,g_auto,w_800,h_800,q_auto,f_auto";
+
     private final Cloudinary cloudinary;
 
     public CloudinarySignatureResponse generateSignature(String productId) {
         long timestamp = System.currentTimeMillis() / 1000L;
-        String folder = "spring-e-com/products";
         String publicId = "products_" + productId + "_" + UUID.randomUUID();
-        String eager = "c_fill,g_auto,w_800,h_800,q_auto,f_auto";
 
-        Map<String, Object> params = new HashMap<>();
-        params.put("timestamp", timestamp);
-        params.put("folder", folder);
-        params.put("public_id", publicId);
-        params.put("eager", eager);
+        Map<String, Object> params = new HashMap<>(Map.of(
+                "timestamp", timestamp,
+                "folder", PRODUCT_FOLDER,
+                "public_id", publicId,
+                "eager", EAGER_TRANSFORMATION_STRING
+        ));
+
 
         String signature = cloudinary.apiSignRequest(params, cloudinary.config.apiSecret);
 
@@ -41,8 +43,8 @@ public class CloudinaryService {
                 cloudinary.config.apiKey,
                 cloudinary.config.cloudName,
                 publicId,
-                folder,
-                eager
+                PRODUCT_FOLDER,
+                EAGER_TRANSFORMATION_STRING
         );
     }
 
@@ -58,7 +60,7 @@ public class CloudinaryService {
             Map<String, Object> result = cloudinary.uploader().upload(
                     file.getBytes(),
                     ObjectUtils.asMap(
-                            "folder", "spring-e-com/products",
+                            "folder", PRODUCT_FOLDER,
                             "eager", List.of(
                                     new Transformation<>()
                                             .crop("fill")
@@ -67,7 +69,7 @@ public class CloudinaryService {
                                             .height(800)
                                             .quality("auto")
                                             .fetchFormat("auto")
-                             )
+                            )
                     )
             );
 
@@ -81,7 +83,7 @@ public class CloudinaryService {
                 @SuppressWarnings("unchecked")
                 List<Map<String, Object>> eagerResults = (List<Map<String, Object>>) result.get("eager");
                 if (eagerResults != null && !eagerResults.isEmpty()) {
-                    croppedUrl = (String) eagerResults.get(0).get("secure_url");
+                    croppedUrl = (String) eagerResults.getFirst().get("secure_url");
                 }
             }
 

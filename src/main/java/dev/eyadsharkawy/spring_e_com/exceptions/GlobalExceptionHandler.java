@@ -1,5 +1,6 @@
 package dev.eyadsharkawy.spring_e_com.exceptions;
 
+import dev.eyadsharkawy.spring_e_com.dtos.error.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
