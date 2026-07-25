@@ -12,6 +12,7 @@ public record ProductResponse(
         int stock,
         Instant createdAt,
         Instant updatedAt,
-        String imageUrl
+        String imageUrl,
+        String slug
 ) {
 }

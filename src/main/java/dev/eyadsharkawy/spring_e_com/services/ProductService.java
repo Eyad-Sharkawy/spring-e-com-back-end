@@ -41,7 +41,8 @@ public class ProductService {
                 product.getStock(),
                 product.getCreatedAt(),
                 product.getUpdatedAt(),
-                product.getImageUrl()
+                product.getImageUrl(),
+                product.getSlug()
         );
     }
 
@@ -68,6 +69,12 @@ public class ProductService {
 
     public ProductResponse getProductById(String id) {
         Product product = getProductEntityById(id);
+        return mapToDto(product);
+    }
+
+    public ProductResponse getProductBySlug(String slug) {
+        Product product = productRepository.findBySlug(slug)
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found with slug: " + slug));
         return mapToDto(product);
     }
 
@@ -107,6 +114,7 @@ public class ProductService {
         newProduct.setDescription(request.description());
         newProduct.setPrice(request.price());
         newProduct.setStock(request.stock());
+        newProduct.setSlug(generateUniqueSlug(request.name()));
 
         Product savedProduct = productRepository.save(newProduct);
         return mapToDto(savedProduct);
@@ -115,6 +123,10 @@ public class ProductService {
     @Transactional
     public ProductResponse updateProduct(String id, ProductRequest request) {
         Product existingProduct = getProductEntityById(id);
+
+        if (existingProduct.getSlug() == null || !existingProduct.getName().equalsIgnoreCase(request.name())) {
+            existingProduct.setSlug(generateUniqueSlug(request.name()));
+        }
 
         existingProduct.setSeller(request.seller());
         existingProduct.setName(request.name());
@@ -168,5 +180,39 @@ public class ProductService {
 
         Product savedProduct = productRepository.save(product);
         return mapToDto(savedProduct);
+    }
+
+    public String generateSlug(String input) {
+        if (input == null) {
+            return "";
+        }
+        return input.toLowerCase()
+                .replaceAll("[^a-z0-9\\s-]", "")
+                .replaceAll("\\s+", "-")
+                .replaceAll("-+", "-")
+                .replaceAll("^-|-$", "");
+    }
+
+    public String generateUniqueSlug(String name) {
+        String baseSlug = generateSlug(name);
+        if (baseSlug.isEmpty()) {
+            baseSlug = "product";
+        }
+        String candidateSlug = baseSlug;
+        while (productRepository.existsBySlug(candidateSlug)) {
+            String randomSuffix = generateRandomString(4);
+            candidateSlug = baseSlug + "-" + randomSuffix;
+        }
+        return candidateSlug;
+    }
+
+    private String generateRandomString(int length) {
+        String chars = "abcdefghijklmnopqrstuvwxyz0123456789";
+        java.security.SecureRandom random = new java.security.SecureRandom();
+        StringBuilder sb = new StringBuilder(length);
+        for (int i = 0; i < length; i++) {
+            sb.append(chars.charAt(random.nextInt(chars.length())));
+        }
+        return sb.toString();
     }
 }

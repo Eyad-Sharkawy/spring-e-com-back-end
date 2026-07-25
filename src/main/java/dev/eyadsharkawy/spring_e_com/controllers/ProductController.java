@@ -28,9 +28,9 @@ public class ProductController {
         return ResponseEntity.ok(productService.getAllProducts(sortBy, direction));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ProductResponse> getProduct(@PathVariable String id) {
-        return ResponseEntity.ok(productService.getProductById(id));
+    @GetMapping("/{slug}")
+    public ResponseEntity<ProductResponse> getProduct(@PathVariable String slug) {
+        return ResponseEntity.ok(productService.getProductBySlug(slug));
     }
 
     @PostMapping

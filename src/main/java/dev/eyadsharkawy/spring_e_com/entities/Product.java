@@ -13,7 +13,9 @@ import java.math.BigDecimal;
 import java.time.Instant;
 
 @Entity
-@Table(name = "products")
+@Table(name = "products", indexes = {
+        @Index(name = "idx_products_slug", columnList = "slug", unique = true)
+})
 @Getter
 @Setter
 @NoArgsConstructor
@@ -23,6 +25,9 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
+
+    @Column(unique = true)
+    private String slug;
 
     private String seller;
     private String name;
