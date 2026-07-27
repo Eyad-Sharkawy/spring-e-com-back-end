@@ -35,9 +35,68 @@ REST API for a full-stack e-commerce application. It powers product catalog mana
 - **CORS** — configurable allowed origins for the frontend
 - **Global error handling** — consistent JSON error responses
 
+## Database Schema (ERD)
+
+The database relationships are represented in the following diagram:
+
+```mermaid
+erDiagram
+    Product {
+        string id PK
+        string slug UK
+        string seller
+        string name
+        string description
+        decimal price
+        int stock
+        timestamp createdAt
+        timestamp updatedAt
+        string imageUrl
+        string imagePublicId
+    }
+    Cart {
+        string id PK
+    }
+    CartItem {
+        string id PK
+        string cart_id FK
+        string product_id FK
+        int quantity
+        timestamp createdAt
+    }
+    Order {
+        string id PK
+        decimal totalAmount
+        timestamp createdAt
+    }
+    OrderItem {
+        string id PK
+        string order_id FK
+        string productId "Logical FK"
+        string productName
+        decimal productPrice
+        int quantity
+        decimal subTotal
+    }
+
+    Cart ||--o{ CartItem : "holds"
+    Product ||--o{ CartItem : "contains"
+    Order ||--o{ OrderItem : "consists of"
+    Product ||--o{ OrderItem : "historically referenced (logical)"
+```
+
+For more architectural and system design details, check out the [System Architecture Document](ARCHITECTURE.md).
+
 ## API reference
 
 Base path: `/api`
+
+### Interactive Documentation & Testing
+
+- **Swagger UI**: When the application is running, you can explore and interact with the API endpoints dynamically:
+  - **Local Dev Server**: [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
+  - **Production API**: [https://spring-e-com.duckdns.org/swagger-ui/index.html](https://spring-e-com.duckdns.org/swagger-ui/index.html)
+- **Postman Collection**: A pre-configured Postman Collection is supplied in [docs/spring_e_com_postman_collection.json](docs/spring_e_com_postman_collection.json). You can import this file directly into Postman to instantly test all catalog, cart, and checkout endpoints. It includes predefined environment variables (`baseUrl`, `cartId`, `productId`) for easy testing.
 
 ### Products
 
@@ -98,12 +157,38 @@ Returns an order with line items, total amount, and creation timestamp. The cart
 
 ### Error responses
 
-Errors return a JSON body with `status`, `message`, and `timestamp`:
+The API implements the **RFC 7807 Problem Details** standard for all error responses (with a `Content-Type` of `application/problem+json`). 
+
+Errors return a JSON object containing standard RFC 7807 properties along with custom properties for backward compatibility:
+
+```json
+{
+  "type": "about:blank",
+  "title": "Not Found",
+  "status": 404,
+  "detail": "Product not found with identifier: abc",
+  "instance": "/api/products/abc",
+  "message": "Product not found with identifier: abc",  // Backward compatible
+  "timestamp": 1785146027823                              // Backward compatible
+}
+```
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `type` | String | A URI reference identifying the error type (defaults to `about:blank`) |
+| `title` | String | A short, human-readable summary of the problem type |
+| `status` | Integer | The HTTP status code |
+| `detail` | String | A human-readable explanation specific to this occurrence of the problem |
+| `instance` | String | A URI reference that identifies the specific occurrence of the problem |
+| `message` | String | Backward-compatible alias for the `detail` property |
+| `timestamp` | Long | Epoch timestamp of when the error occurred |
+
+Common error codes:
 
 | Status | When |
 | --- | --- |
-| `400` | Invalid request (e.g. empty cart, bad quantity) |
-| `404` | Product or cart not found |
+| `400` | Invalid request (e.g. empty cart, bad quantity, validation errors) |
+| `404` | Resource (product or cart) or endpoint not found |
 | `409` | Insufficient stock |
 
 ## Getting started

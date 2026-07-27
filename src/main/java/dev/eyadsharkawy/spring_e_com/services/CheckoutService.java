@@ -14,6 +14,11 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+/**
+ * Service class responsible for handling order checkouts.
+ * Converts shopping carts to persistent order logs, performs stock validation,
+ * and clears the cart after a successful checkout transaction.
+ */
 @Service
 @RequiredArgsConstructor
 public class CheckoutService {
@@ -21,6 +26,20 @@ public class CheckoutService {
     private final OrderRepository orderRepository;
     private final ProductService productService;
 
+    /**
+     * Executes the checkout process for a given cart.
+     * Starts a database transaction to:
+     * 1. Retrieve the cart and verify it's not empty.
+     * 2. Reduce the stock of each product by the quantity in the cart.
+     * 3. Construct an Order with OrderItems copying current product details (name, price, etc.) for history.
+     * 4. Save the order and clear the cart.
+     *
+     * @param cartId The UUID of the cart to checkout.
+     * @return OrderResponse containing details of the created order.
+     * @throws ResourceNotFoundException if the cart does not exist.
+     * @throws EmptyCartException if the cart contains no items.
+     * @throws InsufficientStockException if stock falls short during reduction.
+     */
     @Transactional
     public OrderResponse checkout(String cartId) {
         Cart cart = cartRepository.findByIdWithItemsAndProducts(cartId)

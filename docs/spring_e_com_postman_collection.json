@@ -1,0 +1,380 @@
+{
+  "info": {
+    "_postman_id": "4b6c8a32-1f7c-4a30-8a19-328d578fb022",
+    "name": "Spring E-com API",
+    "description": "Postman collection for testing the Spring E-com REST API. Contains endpoints for product catalog management, cart operations, secure Cloudinary image uploading, and checkout validations.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Products",
+      "item": [
+        {
+          "name": "List All Products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/products?sortBy=updatedAt&direction=desc",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "products"
+              ],
+              "query": [
+                {
+                  "key": "sortBy",
+                  "value": "updatedAt",
+                  "description": "Sort field (name, price, stock, createdAt, updatedAt)"
+                },
+                {
+                  "key": "direction",
+                  "value": "desc",
+                  "description": "Sort direction (asc, desc)"
+                }
+              ]
+            },
+            "description": "Retrieves the product catalog list. In-stock products are returned first, followed by out-of-stock products, sorted by the requested parameter."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Product by Slug or ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/products/wireless-mouse",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "products",
+                "wireless-mouse"
+              ]
+            },
+            "description": "Fetches a single product details using its unique SEO slug (e.g. 'wireless-mouse') or its UUID ID."
+          },
+          "response": []
+        },
+        {
+          "name": "Create Product",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"seller\": \"Acme Electronics\",\n  \"name\": \"Wireless Gaming Mouse\",\n  \"description\": \"High precision ergonomic wireless gaming mouse with RGB.\",\n  \"price\": 49.99,\n  \"stock\": 50\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/products",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "products"
+              ]
+            },
+            "description": "Registers a new product in the catalog. Automatically generates a unique SEO slug based on the product name."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Product",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"seller\": \"Acme Electronics\",\n  \"name\": \"Wireless Gaming Mouse v2\",\n  \"description\": \"Upgraded high-precision ergonomic wireless gaming mouse with RGB.\",\n  \"price\": 54.99,\n  \"stock\": 75\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/products/{{productId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "products",
+                "{{productId}}"
+              ]
+            },
+            "description": "Updates details of an existing product. Re-generates slug if the name changes."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Cloudinary Upload Signature",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/products/{{productId}}/image/signature",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "products",
+                "{{productId}}",
+                "image",
+                "signature"
+              ]
+            },
+            "description": "Generates a cryptographically signed authorization token used by the frontend to upload image binaries directly to Cloudinary."
+          },
+          "response": []
+        },
+        {
+          "name": "Confirm Cloudinary Upload",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"url\": \"https://res.cloudinary.com/demo/image/upload/v12345/sample.jpg\",\n  \"publicId\": \"sample_public_id\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/products/{{productId}}/image/confirm",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "products",
+                "{{productId}}",
+                "image",
+                "confirm"
+              ]
+            },
+            "description": "Saves the uploaded image URL and public ID returned by Cloudinary to the product record in the database."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Product",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/products/{{productId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "products",
+                "{{productId}}"
+              ]
+            },
+            "description": "Deletes a product from the database, removes its image from Cloudinary, and cascades to remove references from active carts."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Cart",
+      "item": [
+        {
+          "name": "Get Cart Display",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/carts/{{cartId}}?sortBy=createdAt&direction=asc",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "carts",
+                "{{cartId}}"
+              ],
+              "query": [
+                {
+                  "key": "sortBy",
+                  "value": "createdAt",
+                  "description": "Sort cart items by field (productName, productPrice, quantity, subTotal, createdAt)"
+                },
+                {
+                  "key": "direction",
+                  "value": "asc",
+                  "description": "Sort direction (asc, desc)"
+                }
+              ]
+            },
+            "description": "Retrieves the cart contents, sorted by the requested parameter. If the cart doesn't exist, a new empty cart is initialized and returned."
+          },
+          "response": []
+        },
+        {
+          "name": "Add Product to Cart",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"productId\": \"{{productId}}\",\n  \"quantity\": 2\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/carts/{{cartId}}/items",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "carts",
+                "{{cartId}}",
+                "items"
+              ]
+            },
+            "description": "Adds a product to the cart. If the product is already in the cart, increments the quantity. Performs stock check."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Cart Item Quantity",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/carts/{{cartId}}/items/{{productId}}?quantity=5",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "carts",
+                "{{cartId}}",
+                "items",
+                "{{productId}}"
+              ],
+              "query": [
+                {
+                  "key": "quantity",
+                  "value": "5",
+                  "description": "The new absolute quantity to set (must be <= product stock)"
+                }
+              ]
+            },
+            "description": "Updates the quantity of an item in the cart. Performs stock validation."
+          },
+          "response": []
+        },
+        {
+          "name": "Remove Item from Cart",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/carts/{{cartId}}/items/{{productId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "carts",
+                "{{cartId}}",
+                "items",
+                "{{productId}}"
+              ]
+            },
+            "description": "Removes a product completely from the shopping cart."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Checkout",
+      "item": [
+        {
+          "name": "Place Order",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/checkout/{{cartId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "checkout",
+                "{{cartId}}"
+              ]
+            },
+            "description": "Finalizes the checkout transaction. Reduces product inventories, creates an Order record, and clears the cart items."
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "string"
+    },
+    {
+      "key": "cartId",
+      "value": "af01b535-0d4f-4995-a55e-d95a2c5c5c1a",
+      "type": "string"
+    },
+    {
+      "key": "productId",
+      "value": "replace-with-actual-product-uuid",
+      "type": "string"
+    }
+  ]
+}
