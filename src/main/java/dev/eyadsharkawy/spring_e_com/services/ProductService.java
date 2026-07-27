@@ -8,7 +8,7 @@ import dev.eyadsharkawy.spring_e_com.entities.product.Product;
 import dev.eyadsharkawy.spring_e_com.exceptions.ResourceNotFoundException;
 import dev.eyadsharkawy.spring_e_com.repositories.CartItemRepository;
 import dev.eyadsharkawy.spring_e_com.repositories.ProductRepository;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;

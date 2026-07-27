@@ -7,7 +7,7 @@ import dev.eyadsharkawy.spring_e_com.entities.product.Product;
 import dev.eyadsharkawy.spring_e_com.exceptions.ResourceNotFoundException;
 import dev.eyadsharkawy.spring_e_com.repositories.CartRepository;
 import dev.eyadsharkawy.spring_e_com.repositories.ProductRepository;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -54,6 +54,7 @@ public class CartService {
         return CartDto.from(cartRepository.save(cart));
     }
 
+    @Transactional(readOnly = true)
     public CartDto getCartDisplay(String cartId, String sortBy, String direction) {
         Cart cart = findCartOrThrow(cartId);
         Comparator<CartItemResponse> comparator = buildComparator(sortBy, direction);
@@ -61,7 +62,7 @@ public class CartService {
     }
 
     private Cart findCartOrThrow(String cartId) {
-        return cartRepository.findById(cartId)
+        return cartRepository.findByIdWithItemsAndProducts(cartId)
                 .orElseThrow(() -> new ResourceNotFoundException("Cart not found: " + cartId));
     }
 

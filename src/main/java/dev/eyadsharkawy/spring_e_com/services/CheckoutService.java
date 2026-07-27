@@ -10,7 +10,7 @@ import dev.eyadsharkawy.spring_e_com.exceptions.EmptyCartException;
 import dev.eyadsharkawy.spring_e_com.exceptions.ResourceNotFoundException;
 import dev.eyadsharkawy.spring_e_com.repositories.CartRepository;
 import dev.eyadsharkawy.spring_e_com.repositories.OrderRepository;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +23,7 @@ public class CheckoutService {
 
     @Transactional
     public OrderResponse checkout(String cartId) {
-        Cart cart = cartRepository.findById(cartId)
+        Cart cart = cartRepository.findByIdWithItemsAndProducts(cartId)
                 .orElseThrow(() -> new ResourceNotFoundException("Cart not found: " + cartId));
 
         if (cart.getItems().isEmpty()) {
