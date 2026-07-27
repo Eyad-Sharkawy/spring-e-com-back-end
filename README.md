@@ -87,31 +87,33 @@ erDiagram
 
 For more architectural and system design details, check out the [System Architecture Document](ARCHITECTURE.md).
 
-## API reference
+## API reference & Versioning
 
-Base path: `/api`
+Base path: `/api/v2`
+
+The API is versioned to support backward compatibility. The legacy `/api/v1` namespace is `@Deprecated` but remains active. 
 
 ### Interactive Documentation & Testing
 
-- **Swagger UI**: When the application is running, you can explore and interact with the API endpoints dynamically:
-  - **Local Dev Server**: [http://localhost:8080/api-docs/index.html](http://localhost:8080/api-docs/index.html)
+- **Swagger UI**: When the application is running, you can explore and switch between the `v1` (deprecated) and `v2` api spec groups:
+  - **Local Dev Server**: [http://localhost:8080/api-docs/index.html](http://localhost:8080/api-docs/index.html) (V2 pre-selected by default)
   - **Production API**: [https://spring-e-com.duckdns.org/api-docs/index.html](https://spring-e-com.duckdns.org/api-docs/index.html)
-- **Postman Collection**: A pre-configured Postman Collection is supplied in [docs/spring_e_com_postman_collection.json](docs/spring_e_com_postman_collection.json). You can import this file directly into Postman to instantly test all catalog, cart, and checkout endpoints. It includes predefined environment variables (`baseUrl`, `cartId`, `productId`) for easy testing.
+- **Postman Collection**: A pre-configured Postman Collection is supplied in [docs/spring_e_com_postman_collection.json](docs/spring_e_com_postman_collection.json).
 
-### Products
+### Products (V2)
 
 | Method | Endpoint | Description |
 | --- | --- | --- |
-| `GET` | `/products?sortBy=updatedAt&direction=desc` | List all products |
+| `GET` | `/products?page=0&size=12&sortBy=updatedAt&direction=desc` | List products paginated |
 | `GET` | `/products/{identifier}` | Get a product by slug or UUID ID |
 | `POST` | `/products` | Create a product |
 | `PUT` | `/products/{id}` | Update a product |
 | `DELETE` | `/products/{id}` | Delete a product |
 | `POST` | `/products/{id}/image` | Upload/update product image (multipart/form-data) |
 
-**Two-Level Sorting**
+**Two-Level Sorting (DB Paging)**
 
-When listing products, the API automatically partitions the results:
+When listing products, the API automatically partitions the results at the database level:
 1. **In-stock products** (`stock > 0`) are returned first, sorted by the specified `sortBy` and `direction` parameters.
 2. **Out-of-stock products** (`stock == 0`) are returned next, also sorted by the specified parameters.
 
@@ -127,7 +129,7 @@ When listing products, the API automatically partitions the results:
 }
 ```
 
-### Cart
+### Cart (V2)
 
 | Method | Endpoint | Description |
 | --- | --- | --- |
@@ -147,7 +149,7 @@ When listing products, the API automatically partitions the results:
 
 Cart item sort fields: `productName`, `productPrice`, `quantity`, `subTotal`, `createdAt`.
 
-### Checkout
+### Checkout (V2)
 
 | Method | Endpoint | Description |
 | --- | --- | --- |

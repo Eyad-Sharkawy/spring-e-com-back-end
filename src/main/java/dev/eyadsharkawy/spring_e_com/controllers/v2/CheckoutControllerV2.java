@@ -1,4 +1,4 @@
-package dev.eyadsharkawy.spring_e_com.controllers;
+package dev.eyadsharkawy.spring_e_com.controllers.v2;
 
 import dev.eyadsharkawy.spring_e_com.dtos.order.OrderResponse;
 import dev.eyadsharkawy.spring_e_com.services.CheckoutService;
@@ -10,16 +10,13 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/checkout")
+@RequestMapping("/api/v2/checkout")
 @RequiredArgsConstructor
-@Tag(name = "Checkout", description = "Operations related to order checkout processing")
-public class CheckoutController {
+@Tag(name = "Checkout V2", description = "Operations related to order checkout processing (V2)")
+public class CheckoutControllerV2 {
     private final CheckoutService service;
 
     @PostMapping("/{cartId}")

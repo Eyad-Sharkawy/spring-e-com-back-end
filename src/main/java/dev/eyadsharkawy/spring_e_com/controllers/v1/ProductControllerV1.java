@@ -1,4 +1,4 @@
-package dev.eyadsharkawy.spring_e_com.controllers;
+package dev.eyadsharkawy.spring_e_com.controllers.v1;
 
 import dev.eyadsharkawy.spring_e_com.dtos.product.CloudinarySignatureResponse;
 import dev.eyadsharkawy.spring_e_com.dtos.product.CloudinaryUploadConfirmRequest;
@@ -22,8 +22,9 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/products")
 @RequiredArgsConstructor
-@Tag(name = "Products", description = "Operations related to product catalog management")
-public class ProductController {
+@Tag(name = "Products V1", description = "Operations related to product catalog management (V1 - Deprecated)")
+@Deprecated
+public class ProductControllerV1 {
 
     private final ProductService productService;
 

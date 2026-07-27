@@ -47,4 +47,12 @@ public class OpenApiConfig {
                 .pathsToMatch("/api/v1/**")
                 .build();
     }
+
+    @Bean
+    public GroupedOpenApi v2Api() {
+        return GroupedOpenApi.builder()
+                .group("v2")
+                .pathsToMatch("/api/v2/**")
+                .build();
+    }
 }

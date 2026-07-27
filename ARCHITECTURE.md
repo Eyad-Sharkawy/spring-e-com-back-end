@@ -107,6 +107,13 @@ To prevent orphaned references and server-side errors, deleting a product:
 - Automatically deletes the product's image asset in Cloudinary (using its `imagePublicId`).
 - Cascades to remove that product from all active shopping carts (`CartItem` table), preventing cart retrieval failures for other active users.
 
+### Coarse-Grained API Versioning (V2) & Database Pagination
+To introduce pagination safely and demonstrate production-grade REST design, the application implements coarse-grained versioning:
+* **API Version Separation**: Legacy `/api/v1` endpoints (for Products, Carts, and Checkout) are kept intact, renamed to `*V1.java` controllers, and annotated as `@Deprecated` to respect backward compatibility.
+* **Unified `/api/v2` Namespace**: All endpoints are mapped to `/api/v2` for client consistency, allowing the frontend environment URL to switch entirely to V2.
+* **Database-Level Paginated Sorting**: Rather than sorting the full product stream in-memory, the `ProductRepository` overrides `findAll(Pageable)` using a JPQL query that forces in-stock items to appear first (`ORDER BY CASE WHEN p.stock > 0 THEN 0 ELSE 1 END ASC`). This preserves the business rule while fetching paged queries with optimal DB indexes.
+* **OpenAPI spec separation**: Defined distinct OpenAPI groups (`v1` and `v2`) in `OpenApiConfig` with `v2` loaded by default.
+
 ---
 
 ## 3. Key Frontend Design Patterns & Decisions

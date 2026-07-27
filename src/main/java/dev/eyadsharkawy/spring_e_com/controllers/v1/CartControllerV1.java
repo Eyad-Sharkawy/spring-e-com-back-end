@@ -1,4 +1,4 @@
-package dev.eyadsharkawy.spring_e_com.controllers;
+package dev.eyadsharkawy.spring_e_com.controllers.v1;
 
 import dev.eyadsharkawy.spring_e_com.dtos.cart.CartDto;
 import dev.eyadsharkawy.spring_e_com.dtos.cart.CartItemRequest;
@@ -16,8 +16,9 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/carts")
 @RequiredArgsConstructor
-@Tag(name = "Carts", description = "Operations related to shopping cart management")
-public class CartController {
+@Tag(name = "Carts V1", description = "Operations related to shopping cart management (V1 - Deprecated)")
+@Deprecated
+public class CartControllerV1 {
     private final CartService cartService;
 
     @GetMapping("/{cartId}")

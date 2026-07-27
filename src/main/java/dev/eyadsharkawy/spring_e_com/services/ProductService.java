@@ -1,14 +1,19 @@
 package dev.eyadsharkawy.spring_e_com.services;
 
+import dev.eyadsharkawy.spring_e_com.dtos.common.PageResponse;
 import dev.eyadsharkawy.spring_e_com.dtos.product.CloudinarySignatureResponse;
 import dev.eyadsharkawy.spring_e_com.dtos.product.CloudinaryUploadConfirmRequest;
 import dev.eyadsharkawy.spring_e_com.dtos.product.ProductRequest;
 import dev.eyadsharkawy.spring_e_com.dtos.product.ProductResponse;
 import dev.eyadsharkawy.spring_e_com.entities.product.Product;
+import dev.eyadsharkawy.spring_e_com.exceptions.InsufficientStockException;
 import dev.eyadsharkawy.spring_e_com.exceptions.ResourceNotFoundException;
 import dev.eyadsharkawy.spring_e_com.repositories.CartItemRepository;
 import dev.eyadsharkawy.spring_e_com.repositories.ProductRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -66,6 +71,41 @@ public class ProductService {
                 .sorted(Comparator.comparing(product -> product.getStock() == 0))
                 .map(ProductResponse::from)
                 .toList();
+    }
+
+    /**
+     * Retrieves a page of products sorted by specified properties.
+     * Implements sorting by whether products are in stock, followed by the selected sort parameter.
+     *
+     * @param page      Zero-based page index.
+     * @param size      Number of records per page.
+     * @param sortBy    Field to sort the products by.
+     * @param direction Sort direction ("asc" or "desc").
+     * @return PageResponse of ProductResponse objects.
+     */
+    public PageResponse<ProductResponse> getAllProductsPaginated(int page, int size, String sortBy, String direction) {
+        String safeSortField = ALLOWED_SORT_FIELDS.contains(sortBy) ? sortBy : "updatedAt";
+
+        Sort.Direction sortDirection = "asc".equalsIgnoreCase(direction)
+                ? Sort.Direction.ASC
+                : Sort.Direction.DESC;
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, safeSortField));
+        Page<Product> productPage = productRepository.findAll(pageable);
+
+        List<ProductResponse> content = productPage.getContent()
+                .stream()
+                .map(ProductResponse::from)
+                .toList();
+
+        return new PageResponse<>(
+                content,
+                productPage.getNumber(),
+                productPage.getSize(),
+                productPage.getTotalElements(),
+                productPage.getTotalPages(),
+                productPage.isLast()
+        );
     }
 
     /**
