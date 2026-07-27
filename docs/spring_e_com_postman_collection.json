@@ -15,12 +15,13 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/products?sortBy=updatedAt&direction=desc",
+              "raw": "{{baseUrl}}/api/v1/products?sortBy=updatedAt&direction=desc",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
+                "v1",
                 "products"
               ],
               "query": [
@@ -46,12 +47,13 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/products/wireless-mouse",
+              "raw": "{{baseUrl}}/api/v1/products/wireless-mouse",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
+                "v1",
                 "products",
                 "wireless-mouse"
               ]
@@ -76,12 +78,13 @@
               "raw": "{\n  \"seller\": \"Acme Electronics\",\n  \"name\": \"Wireless Gaming Mouse\",\n  \"description\": \"High precision ergonomic wireless gaming mouse with RGB.\",\n  \"price\": 49.99,\n  \"stock\": 50\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/api/products",
+              "raw": "{{baseUrl}}/api/v1/products",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
+                "v1",
                 "products"
               ]
             },
@@ -105,12 +108,13 @@
               "raw": "{\n  \"seller\": \"Acme Electronics\",\n  \"name\": \"Wireless Gaming Mouse v2\",\n  \"description\": \"Upgraded high-precision ergonomic wireless gaming mouse with RGB.\",\n  \"price\": 54.99,\n  \"stock\": 75\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/api/products/{{productId}}",
+              "raw": "{{baseUrl}}/api/v1/products/{{productId}}",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
+                "v1",
                 "products",
                 "{{productId}}"
               ]
@@ -125,12 +129,13 @@
             "method": "POST",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/products/{{productId}}/image/signature",
+              "raw": "{{baseUrl}}/api/v1/products/{{productId}}/image/signature",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
+                "v1",
                 "products",
                 "{{productId}}",
                 "image",
@@ -157,12 +162,13 @@
               "raw": "{\n  \"url\": \"https://res.cloudinary.com/demo/image/upload/v12345/sample.jpg\",\n  \"publicId\": \"sample_public_id\"\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/api/products/{{productId}}/image/confirm",
+              "raw": "{{baseUrl}}/api/v1/products/{{productId}}/image/confirm",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
+                "v1",
                 "products",
                 "{{productId}}",
                 "image",
@@ -179,12 +185,13 @@
             "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/products/{{productId}}",
+              "raw": "{{baseUrl}}/api/v1/products/{{productId}}",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
+                "v1",
                 "products",
                 "{{productId}}"
               ]
@@ -204,12 +211,13 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/carts/{{cartId}}?sortBy=createdAt&direction=asc",
+              "raw": "{{baseUrl}}/api/v1/carts/{{cartId}}?sortBy=createdAt&direction=asc",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
+                "v1",
                 "carts",
                 "{{cartId}}"
               ],
@@ -246,12 +254,13 @@
               "raw": "{\n  \"productId\": \"{{productId}}\",\n  \"quantity\": 2\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/api/carts/{{cartId}}/items",
+              "raw": "{{baseUrl}}/api/v1/carts/{{cartId}}/items",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
+                "v1",
                 "carts",
                 "{{cartId}}",
                 "items"
@@ -267,12 +276,13 @@
             "method": "PUT",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/carts/{{cartId}}/items/{{productId}}?quantity=5",
+              "raw": "{{baseUrl}}/api/v1/carts/{{cartId}}/items/{{productId}}?quantity=5",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
+                "v1",
                 "carts",
                 "{{cartId}}",
                 "items",
@@ -296,12 +306,13 @@
             "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/carts/{{cartId}}/items/{{productId}}",
+              "raw": "{{baseUrl}}/api/v1/carts/{{cartId}}/items/{{productId}}",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
+                "v1",
                 "carts",
                 "{{cartId}}",
                 "items",
@@ -323,12 +334,13 @@
             "method": "POST",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/checkout/{{cartId}}",
+              "raw": "{{baseUrl}}/api/v1/checkout/{{cartId}}",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
+                "v1",
                 "checkout",
                 "{{cartId}}"
               ]
