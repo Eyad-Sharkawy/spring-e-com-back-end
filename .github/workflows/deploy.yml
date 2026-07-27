@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - 'src/**'
+      - 'src/main/**'
       - 'pom.xml'
       - '.github/workflows/**'
       - 'docker-compose.yml'
