@@ -223,7 +223,6 @@ The `.env` file is loaded automatically via `spring-dotenv`. See [`.env.example`
 | `DB_USERNAME` | Database username | — |
 | `DB_PASSWORD` | Database password | — |
 | `DB_DRIVER` | JDBC driver class | — |
-| `DB_DIALECT` | Hibernate dialect | — |
 | `CLOUDINARY_CLOUD_NAME` | Cloudinary cloud name | — |
 | `CLOUDINARY_API_KEY` | Cloudinary API key | — |
 | `CLOUDINARY_API_SECRET` | Cloudinary API secret | — |
