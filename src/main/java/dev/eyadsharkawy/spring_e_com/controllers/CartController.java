@@ -23,8 +23,8 @@ public class CartController {
     @GetMapping("/{cartId}")
     @Operation(summary = "Get cart details", description = "Retrieves items in the shopping cart sorted by specified parameter and direction.")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Successfully retrieved cart details"),
-        @ApiResponse(responseCode = "404", description = "Cart not found")
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved cart details"),
+            @ApiResponse(responseCode = "404", description = "Cart not found")
     })
     public ResponseEntity<CartDto> getCart(
             @Parameter(description = "UUID of the cart", example = "af01b535-0d4f-4995-a55e-d95a2c5c5c1a")
@@ -39,9 +39,9 @@ public class CartController {
     @PostMapping("/{cartId}/items")
     @Operation(summary = "Add item to cart", description = "Adds a product to the specified shopping cart.")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Item added to cart successfully"),
-        @ApiResponse(responseCode = "400", description = "Invalid request details"),
-        @ApiResponse(responseCode = "404", description = "Cart or Product not found")
+            @ApiResponse(responseCode = "200", description = "Item added to cart successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid request details"),
+            @ApiResponse(responseCode = "404", description = "Cart or Product not found")
     })
     public ResponseEntity<CartDto> addItemToCart(
             @Parameter(description = "UUID of the cart", example = "af01b535-0d4f-4995-a55e-d95a2c5c5c1a")
@@ -54,9 +54,9 @@ public class CartController {
     @PutMapping("/{cartId}/items/{productId}")
     @Operation(summary = "Update item quantity", description = "Updates the quantity of a specific product inside the cart.")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Cart item quantity updated successfully"),
-        @ApiResponse(responseCode = "400", description = "Invalid quantity specified"),
-        @ApiResponse(responseCode = "404", description = "Cart or product not found in cart")
+            @ApiResponse(responseCode = "200", description = "Cart item quantity updated successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid quantity specified"),
+            @ApiResponse(responseCode = "404", description = "Cart or product not found in cart")
     })
     public ResponseEntity<CartDto> updateItemQuantity(
             @Parameter(description = "UUID of the cart", example = "af01b535-0d4f-4995-a55e-d95a2c5c5c1a")
@@ -72,8 +72,8 @@ public class CartController {
     @DeleteMapping("/{cartId}/items/{productId}")
     @Operation(summary = "Remove item from cart", description = "Removes a specific product from the cart.")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Product removed from cart successfully"),
-        @ApiResponse(responseCode = "404", description = "Cart or product not found in cart")
+            @ApiResponse(responseCode = "200", description = "Product removed from cart successfully"),
+            @ApiResponse(responseCode = "404", description = "Cart or product not found in cart")
     })
     public ResponseEntity<CartDto> removeItemFromCart(
             @Parameter(description = "UUID of the cart", example = "af01b535-0d4f-4995-a55e-d95a2c5c5c1a")

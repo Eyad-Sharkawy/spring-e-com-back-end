@@ -30,7 +30,7 @@ public class ProductController {
     @GetMapping
     @Operation(summary = "Get all products", description = "Retrieves a list of all products sorted by the specified parameter and direction.")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Successfully retrieved products list")
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved products list")
     })
     public ResponseEntity<List<ProductResponse>> getAllProducts(
             @Parameter(description = "Field to sort the products by", example = "updatedAt")
@@ -43,8 +43,8 @@ public class ProductController {
     @GetMapping("/{identifier}")
     @Operation(summary = "Get product by ID or Slug", description = "Retrieves details of a product using either its slug or database UUID.")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Product found and returned"),
-        @ApiResponse(responseCode = "404", description = "Product not found")
+            @ApiResponse(responseCode = "200", description = "Product found and returned"),
+            @ApiResponse(responseCode = "404", description = "Product not found")
     })
     public ResponseEntity<ProductResponse> getProduct(
             @Parameter(description = "The product UUID or unique slug", example = "wireless-headphones")
@@ -55,8 +55,8 @@ public class ProductController {
     @PostMapping
     @Operation(summary = "Create a new product", description = "Adds a new product to the catalog.")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "201", description = "Product successfully created"),
-        @ApiResponse(responseCode = "400", description = "Invalid input details provided")
+            @ApiResponse(responseCode = "201", description = "Product successfully created"),
+            @ApiResponse(responseCode = "400", description = "Invalid input details provided")
     })
     public ResponseEntity<ProductResponse> createProduct(@Valid @RequestBody ProductRequest request) {
         ProductResponse createdProduct = productService.createProduct(request);
@@ -66,9 +66,9 @@ public class ProductController {
     @PutMapping("/{id}")
     @Operation(summary = "Update an existing product", description = "Updates details of a product specified by its UUID.")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Product updated successfully"),
-        @ApiResponse(responseCode = "400", description = "Invalid input details provided"),
-        @ApiResponse(responseCode = "404", description = "Product not found")
+            @ApiResponse(responseCode = "200", description = "Product updated successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid input details provided"),
+            @ApiResponse(responseCode = "404", description = "Product not found")
     })
     public ResponseEntity<ProductResponse> updateProduct(
             @Parameter(description = "UUID of the product to update", example = "123e4567-e89b-12d3-a456-426614174000")
@@ -81,8 +81,8 @@ public class ProductController {
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete a product", description = "Removes a product from the catalog by its UUID.")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "204", description = "Product deleted successfully"),
-        @ApiResponse(responseCode = "404", description = "Product not found")
+            @ApiResponse(responseCode = "204", description = "Product deleted successfully"),
+            @ApiResponse(responseCode = "404", description = "Product not found")
     })
     public ResponseEntity<Void> deleteProduct(
             @Parameter(description = "UUID of the product to delete", example = "123e4567-e89b-12d3-a456-426614174000")
@@ -94,8 +94,8 @@ public class ProductController {
     @PostMapping("/{id}/image")
     @Operation(summary = "Upload product image", description = "Uploads a product image directly.")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Image uploaded successfully"),
-        @ApiResponse(responseCode = "404", description = "Product not found")
+            @ApiResponse(responseCode = "200", description = "Image uploaded successfully"),
+            @ApiResponse(responseCode = "404", description = "Product not found")
     })
     public ResponseEntity<ProductResponse> uploadProductImage(
             @Parameter(description = "UUID of the product", example = "123e4567-e89b-12d3-a456-426614174000")
@@ -108,8 +108,8 @@ public class ProductController {
     @PostMapping("/{id}/image/signature")
     @Operation(summary = "Get Cloudinary upload signature", description = "Generates a signed signature for secure front-end direct uploading to Cloudinary.")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Signature generated successfully"),
-        @ApiResponse(responseCode = "404", description = "Product not found")
+            @ApiResponse(responseCode = "200", description = "Signature generated successfully"),
+            @ApiResponse(responseCode = "404", description = "Product not found")
     })
     public ResponseEntity<CloudinarySignatureResponse> getUploadSignature(
             @Parameter(description = "UUID of the product", example = "123e4567-e89b-12d3-a456-426614174000")
@@ -120,9 +120,9 @@ public class ProductController {
     @PostMapping("/{id}/image/confirm")
     @Operation(summary = "Confirm product image upload", description = "Confirms that the image has been successfully uploaded to Cloudinary.")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Image confirmation processed successfully"),
-        @ApiResponse(responseCode = "400", description = "Invalid request details"),
-        @ApiResponse(responseCode = "404", description = "Product not found")
+            @ApiResponse(responseCode = "200", description = "Image confirmation processed successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid request details"),
+            @ApiResponse(responseCode = "404", description = "Product not found")
     })
     public ResponseEntity<ProductResponse> confirmUpload(
             @Parameter(description = "UUID of the product", example = "123e4567-e89b-12d3-a456-426614174000")

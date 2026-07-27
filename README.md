@@ -94,8 +94,8 @@ Base path: `/api`
 ### Interactive Documentation & Testing
 
 - **Swagger UI**: When the application is running, you can explore and interact with the API endpoints dynamically:
-  - **Local Dev Server**: [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
-  - **Production API**: [https://spring-e-com.duckdns.org/swagger-ui/index.html](https://spring-e-com.duckdns.org/swagger-ui/index.html)
+  - **Local Dev Server**: [http://localhost:8080/api-docs/index.html](http://localhost:8080/api-docs/index.html)
+  - **Production API**: [https://spring-e-com.duckdns.org/api-docs/index.html](https://spring-e-com.duckdns.org/api-docs/index.html)
 - **Postman Collection**: A pre-configured Postman Collection is supplied in [docs/spring_e_com_postman_collection.json](docs/spring_e_com_postman_collection.json). You can import this file directly into Postman to instantly test all catalog, cart, and checkout endpoints. It includes predefined environment variables (`baseUrl`, `cartId`, `productId`) for easy testing.
 
 ### Products

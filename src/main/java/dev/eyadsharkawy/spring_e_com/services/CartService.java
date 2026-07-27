@@ -7,9 +7,9 @@ import dev.eyadsharkawy.spring_e_com.entities.product.Product;
 import dev.eyadsharkawy.spring_e_com.exceptions.ResourceNotFoundException;
 import dev.eyadsharkawy.spring_e_com.repositories.CartRepository;
 import dev.eyadsharkawy.spring_e_com.repositories.ProductRepository;
-import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Comparator;
 import java.util.Map;
@@ -51,7 +51,7 @@ public class CartService {
      * @param productId     The UUID of the product.
      * @param quantityToAdd The quantity of the product to add.
      * @return Updated CartDto.
-     * @throws ResourceNotFoundException if cart or product is not found.
+     * @throws ResourceNotFoundException  if cart or product is not found.
      * @throws InsufficientStockException if requested stock exceeds available inventory.
      */
     @Transactional
@@ -120,7 +120,7 @@ public class CartService {
      * @param productId   The UUID of the product to update.
      * @param newQuantity The new absolute quantity for the cart item.
      * @return Updated CartDto.
-     * @throws ResourceNotFoundException if cart or product is not in the cart.
+     * @throws ResourceNotFoundException  if cart or product is not in the cart.
      * @throws InsufficientStockException if the new quantity exceeds available stock.
      */
     @Transactional

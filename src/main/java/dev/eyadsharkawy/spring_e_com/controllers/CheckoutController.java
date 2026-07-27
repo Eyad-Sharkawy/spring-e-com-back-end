@@ -25,9 +25,9 @@ public class CheckoutController {
     @PostMapping("/{cartId}")
     @Operation(summary = "Checkout cart", description = "Processes checkout for the items in the shopping cart and creates a new order.")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "201", description = "Order successfully created from cart"),
-        @ApiResponse(responseCode = "400", description = "Invalid request details / checkout failed"),
-        @ApiResponse(responseCode = "404", description = "Cart not found")
+            @ApiResponse(responseCode = "201", description = "Order successfully created from cart"),
+            @ApiResponse(responseCode = "400", description = "Invalid request details / checkout failed"),
+            @ApiResponse(responseCode = "404", description = "Cart not found")
     })
     public ResponseEntity<OrderResponse> checkout(
             @Parameter(description = "UUID of the cart to checkout", example = "af01b535-0d4f-4995-a55e-d95a2c5c5c1a")

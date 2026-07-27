@@ -10,9 +10,9 @@ import dev.eyadsharkawy.spring_e_com.exceptions.EmptyCartException;
 import dev.eyadsharkawy.spring_e_com.exceptions.ResourceNotFoundException;
 import dev.eyadsharkawy.spring_e_com.repositories.CartRepository;
 import dev.eyadsharkawy.spring_e_com.repositories.OrderRepository;
-import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Service class responsible for handling order checkouts.
@@ -36,8 +36,8 @@ public class CheckoutService {
      *
      * @param cartId The UUID of the cart to checkout.
      * @return OrderResponse containing details of the created order.
-     * @throws ResourceNotFoundException if the cart does not exist.
-     * @throws EmptyCartException if the cart contains no items.
+     * @throws ResourceNotFoundException  if the cart does not exist.
+     * @throws EmptyCartException         if the cart contains no items.
      * @throws InsufficientStockException if stock falls short during reduction.
      */
     @Transactional

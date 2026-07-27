@@ -10,6 +10,6 @@ import org.springframework.web.servlet.view.RedirectView;
 public class RootController {
     @GetMapping({"/", "/api", "/api/v*"})
     public RedirectView redirectToSwagger() {
-        return new RedirectView("/swagger-ui/index.html");
+        return new RedirectView("/api-docs/index.html");
     }
 }

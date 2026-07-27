@@ -35,14 +35,10 @@ public class Cart {
     }
 
     public void removeProductById(String productId) {
-        CartItem itemToRemove = this.items.stream()
+        this.items.stream()
                 .filter(item -> item.getProduct().getId().equals(productId))
-                .findFirst()
-                .orElse(null);
+                .findFirst().ifPresent(this::removeItem);
 
-        if (itemToRemove != null) {
-            this.removeItem(itemToRemove);
-        }
     }
 
     public void addOrUpdateProduct(Product product, int quantityToAdd) {
